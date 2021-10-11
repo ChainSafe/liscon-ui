@@ -8,10 +8,10 @@ interface Props {
 }
 
 const Check = ({ className }: Props) => {
-    const { id = "" } = useParams()
+    const { id = "" } = useParams<{ id: string }>()
 
     return (<div className={className}>
-        <h1>Mint</h1>
+        <h1>Mint {id}</h1>
     </div>)
 }
 export default styled(Check)`
