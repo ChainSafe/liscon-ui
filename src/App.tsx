@@ -3,7 +3,7 @@ import { GlobalStyles } from "./styles/GlobalStyles"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import Header from "./components/Header"
 import Home from "./pages/Home"
-import Check from "./pages/Mint"
+import Mint from "./pages/Mint"
 
 const App = () => {
   return (
@@ -22,7 +22,7 @@ const App = () => {
               <Home />
             </Route>
             <Route path="/mint/:id">
-              <Check />
+              <Mint />
             </Route>
           </Switch>
         </div>
