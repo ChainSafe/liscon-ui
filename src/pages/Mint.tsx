@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom"
 import styled from "styled-components"
 import useGetNFT from "../hooks/useGetNFT"
 import Button from "../ui-components/Button"
+import Loader from "../ui-components/Loader"
 import Input from "../ui-components/TextInput"
 
 
@@ -10,17 +11,20 @@ interface Props {
     className?: string
 }
 
+const OPENSEA_BASE = "https://opensea.io/"
 const ethAddressRegex = new RegExp(/^0x[a-fA-F0-9]{40}$/)
 
 const Mint = ({ className }: Props) => {
     const { id = "" } = useParams<{ id: string }>()
-    const { isAlreadyMinted, isLoading } = useGetNFT(id)
+    const { isAlreadyMinted, isBeingMinted, isLoading } = useGetNFT(id)
     const [address, setAddress] = useState("")
     const [isInvalidAddress, setIsInvalidAddress] = useState(false)
 
     const onClick = useCallback(() => {
-        console.log("ok")
-    }, [])
+        if (isBeingMinted && !!address) {
+            window.open(`${OPENSEA_BASE}${address}`)
+        }
+    }, [address, isBeingMinted])
 
     const onInputValue = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         const trimmedInput = event.target.value.trim()
@@ -35,17 +39,29 @@ const Mint = ({ className }: Props) => {
             <div className="textContainer">
                 {isLoading &&
                     (
-                        <div>
+                        <div className="loader">
+                            <Loader />
                             Loading...
                         </div>
                     )
                 }
+                {!isLoading && !isAlreadyMinted && isBeingMinted && (
+                    <>
+                        <div className="loader">
+                            <Loader />
+                        </div>
+                        <div>
+                            We&apos; re minting this NFT right now.<br />
+                            Once done, it&apos;ll be visible on you on any Polygon NFT explorer such as OpenSea.
+                        </div>
+                    </>
+                )}
                 {!isLoading && isAlreadyMinted && (
                     <div>
                         Sorry, this NFT is already minted :(
                     </div>
                 )}
-                {!isLoading && !isAlreadyMinted && (
+                {!isLoading && !isAlreadyMinted && !isBeingMinted && (
                     <div>
                         Yay, you&apos;re the first to find this card, you can mint the NFT by typing in your ETH address.
                     </div>
@@ -67,7 +83,10 @@ const Mint = ({ className }: Props) => {
                             onClick={onClick}
                             disabled={isInvalidAddress}
                         >
-                            Mint
+                            {isBeingMinted
+                                ? "Visit OpenSea"
+                                : "Mint"
+                            }
                         </Button>
                     </div>
                 </>
@@ -97,5 +116,9 @@ export default styled(Mint)`
         display: flex;
         justify-content: center;
         margin-top: 1rem;
+    }
+
+    .loader {
+        text-align: center;
     }
 `

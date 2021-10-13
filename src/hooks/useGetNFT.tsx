@@ -16,8 +16,8 @@ interface ApiAnswer {
 export default (id: string) => {
     const [apiAnswer, setApiAnswer] = useState<ApiAnswer[] | undefined>()
     const [isLoading, setIsLoading] = useState(false)
-    const [isDataReady, setIsDataReady] = useState(false)
     const isAlreadyMinted = useMemo(() => !!apiAnswer?.[0]?.is_minted, [apiAnswer])
+    const isBeingMinted = useMemo(() => !!apiAnswer?.[0]?.is_being_minted, [apiAnswer])
 
     // Trigger the fetchData after the initial render by using the useEffect hook
     useEffect(() => {
@@ -29,9 +29,8 @@ export default (id: string) => {
             .catch(console.error)
             .finally(() => {
                 setIsLoading(false)
-                setIsDataReady(true)
             })
     }, [id])
 
-    return { isLoading, isAlreadyMinted, isDataReady }
+    return { isLoading, isAlreadyMinted, isBeingMinted }
 }
