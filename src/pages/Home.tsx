@@ -9,7 +9,7 @@ const Home = ({ className }: Props) => {
 
     return (
         <div className={className}>
-            <div className="textContainer">Welcome!<br />Find cards with QR codes around Liscon to mint exclusive NFTs!</div>
+            <div className="textContainer">WELCOME!<br />Find cards with QR codes around Liscon to mint exclusive NFTs!</div>
         </div>)
 }
 
