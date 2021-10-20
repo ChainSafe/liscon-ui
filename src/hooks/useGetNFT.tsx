@@ -2,6 +2,7 @@ import axios from "axios"
 import { useState, useEffect, useMemo, useCallback } from "react"
 
 const API_URL = "https://screams-yn559.ondigitalocean.app"
+const IPFS_GATEWAY = "https://gateway.pinata.cloud/ipfs/"
 
 interface ApiAnswer {
     id: string
@@ -29,7 +30,7 @@ export default (id: string) => {
                 setApiGETAnswer({
                     ...fetchedData,
                     is_being_minted: (data as any).is_being_minted as string === "TRUE",
-                    is_minted: (data as any).is_minted === "TRUE",
+                    is_minted: (data as any).is_minted === "TRUE"
                 })
             })
             .catch(console.error)
@@ -70,9 +71,10 @@ export default (id: string) => {
 
     const getImageUrl = useCallback(() => {
         if (!apiGETAnswer) return
-        let ipfs_url = "https://ipfs.io/ipfs/" + apiGETAnswer.ipfs_link.slice(7)
+        const ipfs_url = IPFS_GATEWAY + apiGETAnswer.ipfs_link.slice(7)
+
         axios.get(ipfs_url).then((res) => {
-            setImageUrl("https://ipfs.io/ipfs/" + (res.data as any).image.slice(7))
+            setImageUrl(IPFS_GATEWAY + (res.data as any).image.slice(7))
         }).catch((error) => {
             console.warn("Error: " + error)
         })
@@ -82,7 +84,7 @@ export default (id: string) => {
         if (apiGETAnswer && !imageUrl) {
             getImageUrl()
         }
-    }, [apiGETAnswer, imageUrl])
+    }, [apiGETAnswer, getImageUrl, imageUrl])
 
     return { isLoading, isAlreadyMinted, isBeingMinted, mint, imageUrl }
 }
