@@ -1,6 +1,7 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
+import useGetNFT from "../hooks/useGetNFT"
 // import useGetNFT from "../hooks/useGetNFT"
 import Button from "../ui-components/Button"
 // import Loader from "../ui-components/Loader"
@@ -16,22 +17,11 @@ const OPENSEA_BASE = "https://opensea.io/"
 
 const View = ({ className }: Props) => {
     const { nft = "" } = useParams<{ nft: string }>()
-    // const { isAlreadyMinted, isBeingMinted, isLoading, mint } = useGetNFT(id)
-    // const [address, setAddress] = useState("")
-    // const [isInvalidAddress, setIsInvalidAddress] = useState(false)
-    // const canMint = useMemo(() => !isLoading && !isAlreadyMinted && !isBeingMinted, [isAlreadyMinted, isBeingMinted, isLoading])
-    // const [nftAddress, setNftAddress] = useState("")
-
-    // const onMint = useCallback(() => {
-    //     if (!address) {
-    //         console.error("no address")
-    //         return
-    //     }
-
-    //     mint(address)
-    //         .then((nftAddress) => nftAddress && window.open(nftAddress))
-    //         .catch(console.error)
-    // }, [address, mint])
+    const { isAlreadyMinted, isBeingMinted, isLoading, imageUrl } = useGetNFT(nft)
+    const [address, setAddress] = useState("")
+    const [isInvalidAddress, setIsInvalidAddress] = useState(false)
+    const canMint = useMemo(() => !isLoading && !isAlreadyMinted && !isBeingMinted, [isAlreadyMinted, isBeingMinted, isLoading])
+    const [nftAddress, setNftAddress] = useState("")
 
     const onVisitOpenSea = useCallback(() => {
         if (nft) {
@@ -39,21 +29,19 @@ const View = ({ className }: Props) => {
         }
     }, [nft])
 
-    // const onInputValue = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const trimmedInput = event.target.value.trim()
-    //     setAddress(trimmedInput)
-    //     if (!ethAddressRegex.test(trimmedInput)) {
-    //         setIsInvalidAddress(true)
-    //     }
-    // }, [])
-
     return (
         <div className={className}>
             <div className="textContainer">
                 <div>
                     Congrats, your NFT is now minted
                 </div>
+                {
+                    imageUrl && <div className="nftContainer">
+                        <img src={imageUrl} />
+                    </div>
+                }
             </div>
+
             <div className="buttonContainer">
                 <Button
                     onClick={onVisitOpenSea}
@@ -70,10 +58,18 @@ export default styled(View)`
         font-size: var(--fz-xxl);
         margin: 2rem 2rem;
         min-height: 30vh;
-        flex-direction: column;
         display: flex;
-        justify-content: center;
+        flex-direction: row;
+        justify-content: space-between;
     }
+    .textContainer > div {
+        max-width: 50%;
+    }
+
+    .nftContainer img { 
+        width: 100%;
+    }
+
 
     .lineContainer {
         padding: 3rem 2rem;
@@ -82,6 +78,7 @@ export default styled(View)`
         border-bottom: 1px solid;
     }
 
+  
     .buttonContainer {
         display: flex;
         justify-content: center;
