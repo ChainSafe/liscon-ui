@@ -35,8 +35,22 @@ export default (id: string) => {
 
     const mint = useCallback((address: string) => {
         return axios.post<ApiAnswer>(`${API_URL}/mint/${id}/${address}`)
-            .then(({ data }) => {
-                return data.ipfs_link
+            .then(async ({ data }) => {
+                //FORMAT: ipfs://Qmewrfv4zNYgxdToVLAjMYS74phVAJQMv7GNwHBjCM22vD/3013.json
+                let ipfs_url = "https://ipfs.io/ipfs/" + data.ipfs_link.slice(7)
+                console.log(ipfs_url)
+                let metadata
+                try {
+                    let res = await axios.get(ipfs_url)
+                    metadata = res.data
+
+                } catch (err) {
+                    console.warn("Error: " + err)
+                }
+
+                let metadata_image = "https://ipfs.io/ipfs/" + metadata.image.slice(7)
+                console.log(metadata_image)
+                return metadata_image;
             })
             .catch(console.error)
     }, [id])
