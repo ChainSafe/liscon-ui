@@ -1,9 +1,10 @@
-import React, { useCallback } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
 // import useGetNFT from "../hooks/useGetNFT"
 // import useGetNFT from "../hooks/useGetNFT"
 import Button from "../ui-components/Button"
+import Loader from "../ui-components/Loader"
 // import Loader from "../ui-components/Loader"
 // import Input from "../ui-components/TextInput"
 
@@ -17,11 +18,16 @@ const OPENSEA_BASE = "https://opensea.io/assets/matic/0xb6a935e10e6bf2d9e149220b
 
 const View = ({ className }: Props) => {
     const { nft = "" } = useParams<{ nft: string }>()
+    const [isMinting, setIsMinting] = useState(true)
     // const { isAlreadyMinted, isBeingMinted, isLoading, imageUrl } = useGetNFT(nft)
     // const [address, setAddress] = useState("")
     // const [isInvalidAddress, setIsInvalidAddress] = useState(false)
     // const canMint = useMemo(() => !isLoading && !isAlreadyMinted && !isBeingMinted, [isAlreadyMinted, isBeingMinted, isLoading])
     // const [nftAddress, setNftAddress] = useState("")
+
+    useEffect(() => {
+        setTimeout(() => setIsMinting(false), 60000)
+    }, [])
 
     const onVisitOpenSea = useCallback(() => {
         if (nft) {
@@ -32,23 +38,35 @@ const View = ({ className }: Props) => {
     return (
         <div className={className}>
             <div className="textContainer">
-                <div>
-                    Congrats, your NFT is now minted!
-                </div>
+                {!isMinting && <>
+                    <div>
+                        Congrats, your NFT is now minted!
+                    </div>
+                    <div className="textContainerSub">
+                        You may have to refresh the metadata to see it.
+                    </div>
+                </>
+                }
+                {isMinting && <div className="loader">
+                    <Loader />
+                    <span className="text">Minting your NFT. This will take ~1min.</span>
+                </div>}
+
                 {/* {
                     imageUrl && <div className="nftContainer">
                         <img src={imageUrl} />
                     </div>
                 } */}
             </div>
-
-            <div className="buttonContainer">
-                <Button
-                    onClick={onVisitOpenSea}
-                >
-                    View on OpenSea
-                </Button>
-            </div>
+            {!isMinting &&
+                <div className="buttonContainer">
+                    <Button
+                        onClick={onVisitOpenSea}
+                    >
+                        View on OpenSea
+                    </Button>
+                </div>
+            }
         </div>
     )
 }
@@ -59,7 +77,7 @@ export default styled(View)`
         margin: 2rem 2rem;
         min-height: 10vh;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         justify-content: space-between;
     }
     .textContainer > div {
@@ -70,7 +88,19 @@ export default styled(View)`
         width: 100%;
     }
 
+    .textContainerSub {
+        margin-top: 1rem;
+        font-size: 1rem;
+    }
 
+    .loader {
+        text-align: center;
+    }
+
+    .text{
+        padding-left: 1rem;
+    }
+    
     .lineContainer {
         padding: 3rem 2rem;
         border-color: var(--font-color);

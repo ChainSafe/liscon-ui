@@ -136,6 +136,7 @@ export default styled(Mint)`
         display: flex;
         justify-content: center;
         margin-top: 1rem;
+        margin-bottom: 1rem;
     }
 
     .loader {
