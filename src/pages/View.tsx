@@ -90,7 +90,7 @@ export default styled(View)`
 
     .textContainerSub {
         margin-top: 1rem;
-        font-size: 1rem;
+        color: yellow;  
     }
 
     .loader {
