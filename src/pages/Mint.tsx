@@ -29,7 +29,7 @@ const Mint = ({ className }: Props) => {
         }
 
         mint(address)
-            .then((nftAddress) => nftAddress && push(`view/${nftAddress}`))
+            .then((nftAddress) => nftAddress && push(`/view/${nftAddress}`))
             .catch(console.error)
     }, [address, mint, push])
 

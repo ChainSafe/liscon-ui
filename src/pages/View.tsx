@@ -1,7 +1,7 @@
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useCallback } from "react"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
-import useGetNFT from "../hooks/useGetNFT"
+// import useGetNFT from "../hooks/useGetNFT"
 // import useGetNFT from "../hooks/useGetNFT"
 import Button from "../ui-components/Button"
 // import Loader from "../ui-components/Loader"
@@ -12,16 +12,16 @@ interface Props {
     className?: string
 }
 
-const OPENSEA_BASE = "https://opensea.io/"
+const OPENSEA_BASE = "https://opensea.io/assets/matic/0xb6a935e10e6bf2d9e149220bfe5b794fb49ba861/"
 // const ethAddressRegex = new RegExp(/^0x[a-fA-F0-9]{40}$/)
 
 const View = ({ className }: Props) => {
     const { nft = "" } = useParams<{ nft: string }>()
-    const { isAlreadyMinted, isBeingMinted, isLoading, imageUrl } = useGetNFT(nft)
-    const [address, setAddress] = useState("")
-    const [isInvalidAddress, setIsInvalidAddress] = useState(false)
-    const canMint = useMemo(() => !isLoading && !isAlreadyMinted && !isBeingMinted, [isAlreadyMinted, isBeingMinted, isLoading])
-    const [nftAddress, setNftAddress] = useState("")
+    // const { isAlreadyMinted, isBeingMinted, isLoading, imageUrl } = useGetNFT(nft)
+    // const [address, setAddress] = useState("")
+    // const [isInvalidAddress, setIsInvalidAddress] = useState(false)
+    // const canMint = useMemo(() => !isLoading && !isAlreadyMinted && !isBeingMinted, [isAlreadyMinted, isBeingMinted, isLoading])
+    // const [nftAddress, setNftAddress] = useState("")
 
     const onVisitOpenSea = useCallback(() => {
         if (nft) {
@@ -33,13 +33,13 @@ const View = ({ className }: Props) => {
         <div className={className}>
             <div className="textContainer">
                 <div>
-                    Congrats, your NFT is now minted
+                    Congrats, your NFT is now minted!
                 </div>
-                {
+                {/* {
                     imageUrl && <div className="nftContainer">
                         <img src={imageUrl} />
                     </div>
-                }
+                } */}
             </div>
 
             <div className="buttonContainer">
@@ -57,13 +57,13 @@ export default styled(View)`
     .textContainer {
         font-size: var(--fz-xxl);
         margin: 2rem 2rem;
-        min-height: 30vh;
+        min-height: 10vh;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
     }
     .textContainer > div {
-        max-width: 50%;
+        /* max-width: 50%; */
     }
 
     .nftContainer img { 

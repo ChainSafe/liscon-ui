@@ -64,7 +64,7 @@ export default (id: string) => {
     const mint = useCallback((address: string) => {
         return axios.post<ApiAnswer>(`${API_URL}/mint/${id}/${address}`)
             .then(({ data }) => {
-                return data.ipfs_link
+                return data.token_id
             })
             .catch(console.error)
     }, [id])
