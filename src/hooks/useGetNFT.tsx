@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useState, useEffect, useMemo, useCallback } from "react"
 
-const API_URL = "https://screams-yn559.ondigitalocean.app/"
+const API_URL = "https://screams-yn559.ondigitalocean.app"
 
 interface ApiAnswer {
     id: string
