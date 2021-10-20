@@ -14,16 +14,17 @@ interface ApiAnswer {
 }
 
 export default (id: string) => {
-    const [apiGETAnswer, setApiGETAnswer] = useState<ApiAnswer[] | undefined>()
+    const [apiGETAnswer, setApiGETAnswer] = useState<ApiAnswer | undefined>()
     const [isLoading, setIsLoading] = useState(false)
-    const isAlreadyMinted = useMemo(() => !!apiGETAnswer?.[0]?.is_minted, [apiGETAnswer])
-    const isBeingMinted = useMemo(() => !!apiGETAnswer?.[0]?.is_being_minted, [apiGETAnswer])
+    const isAlreadyMinted = useMemo(() => !!apiGETAnswer?.is_minted, [apiGETAnswer])
+    const isBeingMinted = useMemo(() => !!apiGETAnswer?.is_being_minted, [apiGETAnswer])
 
     // Trigger the fetchData after the initial render by using the useEffect hook
     useEffect(() => {
         setIsLoading(true)
         axios.get(`${API_URL}/${id}`)
             .then(({ data }) => {
+                console.log(data)
                 setApiGETAnswer(data)
             })
             .catch(console.error)
