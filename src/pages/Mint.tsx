@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react"
-import { useParams } from "react-router-dom"
+import React, { useCallback, useMemo, useState } from "react"
+import { useHistory, useParams } from "react-router-dom"
 import styled from "styled-components"
 import useGetNFT from "../hooks/useGetNFT"
 import Button from "../ui-components/Button"
@@ -16,15 +16,28 @@ const ethAddressRegex = new RegExp(/^0x[a-fA-F0-9]{40}$/)
 
 const Mint = ({ className }: Props) => {
     const { id = "" } = useParams<{ id: string }>()
-    const { isAlreadyMinted, isBeingMinted, isLoading } = useGetNFT(id)
+    const { push } = useHistory()
+    const { isAlreadyMinted, isBeingMinted, isLoading, mint } = useGetNFT(id)
     const [address, setAddress] = useState("")
     const [isInvalidAddress, setIsInvalidAddress] = useState(false)
+    const canMint = useMemo(() => !isLoading && !isAlreadyMinted && !isBeingMinted, [isAlreadyMinted, isBeingMinted, isLoading])
 
-    const onClick = useCallback(() => {
-        if (isBeingMinted && !!address) {
+    const onMint = useCallback(() => {
+        if (!address) {
+            console.error("no address")
+            return
+        }
+
+        mint(address)
+            .then((nftAddress) => nftAddress && push(`view/${nftAddress}`))
+            .catch(console.error)
+    }, [address, mint, push])
+
+    const onVisitOpenSea = useCallback(() => {
+        if (address) {
             window.open(`${OPENSEA_BASE}${address}`)
         }
-    }, [address, isBeingMinted])
+    }, [address])
 
     const onInputValue = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         const trimmedInput = event.target.value.trim()
@@ -52,7 +65,7 @@ const Mint = ({ className }: Props) => {
                         </div>
                         <div>
                             We&apos; re minting this NFT right now.<br />
-                            Once done, it&apos;ll be visible on you on any Polygon NFT explorer such as OpenSea.
+                            Once done, it&apos;ll be visible on any Polygon NFT explorer such as OpenSea.
                         </div>
                     </>
                 )}
@@ -61,13 +74,13 @@ const Mint = ({ className }: Props) => {
                         Sorry, this NFT is already minted :(
                     </div>
                 )}
-                {!isLoading && !isAlreadyMinted && !isBeingMinted && (
+                {canMint && (
                     <div>
                         Yay, you&apos;re the first to find this card, you can mint the NFT by typing in your ETH address.
                     </div>
                 )}
             </div>
-            {!isLoading && !isAlreadyMinted && (
+            {canMint && (
                 <>
                     <div className="lineContainer">
                         <span className="label">Wallet</span>
@@ -79,15 +92,22 @@ const Mint = ({ className }: Props) => {
                         />
                     </div>
                     <div className="buttonContainer">
-                        <Button
-                            onClick={onClick}
-                            disabled={isInvalidAddress}
-                        >
-                            {isBeingMinted
-                                ? "Visit OpenSea"
-                                : "Mint"
-                            }
-                        </Button>
+                        {isBeingMinted && (
+                            <Button
+                                onClick={onVisitOpenSea}
+                                disabled={isInvalidAddress}
+                            >
+                                Visit OpenSea
+                            </Button>
+                        )}
+                        {canMint && (
+                            <Button
+                                onClick={onMint}
+                                disabled={isInvalidAddress}
+                            >
+                                Mint
+                            </Button>
+                        )}
                     </div>
                 </>
             )}

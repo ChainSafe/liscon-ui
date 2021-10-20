@@ -1,7 +1,7 @@
 import axios from "axios"
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 
-const API_URL = "https://retoolapi.dev/8dpC4g/gopher_test"
+const API_URL = "https://screams-yn559.ondigitalocean.app"
 
 interface ApiAnswer {
     id: string
@@ -14,17 +14,17 @@ interface ApiAnswer {
 }
 
 export default (id: string) => {
-    const [apiAnswer, setApiAnswer] = useState<ApiAnswer[] | undefined>()
+    const [apiGETAnswer, setApiGETAnswer] = useState<ApiAnswer[] | undefined>()
     const [isLoading, setIsLoading] = useState(false)
-    const isAlreadyMinted = useMemo(() => !!apiAnswer?.[0]?.is_minted, [apiAnswer])
-    const isBeingMinted = useMemo(() => !!apiAnswer?.[0]?.is_being_minted, [apiAnswer])
+    const isAlreadyMinted = useMemo(() => !!apiGETAnswer?.[0]?.is_minted, [apiGETAnswer])
+    const isBeingMinted = useMemo(() => !!apiGETAnswer?.[0]?.is_being_minted, [apiGETAnswer])
 
     // Trigger the fetchData after the initial render by using the useEffect hook
     useEffect(() => {
         setIsLoading(true)
-        axios.get(`${API_URL}?qr_id=${id}`)
+        axios.get(`${API_URL}/${id}`)
             .then(({ data }) => {
-                setApiAnswer(data)
+                setApiGETAnswer(data)
             })
             .catch(console.error)
             .finally(() => {
@@ -32,5 +32,13 @@ export default (id: string) => {
             })
     }, [id])
 
-    return { isLoading, isAlreadyMinted, isBeingMinted }
+    const mint = useCallback((address: string) => {
+        return axios.post<ApiAnswer>(`${API_URL}/mint/${id}/${address}`)
+            .then(({ data }) => {
+                return data.ipfs_link
+            })
+            .catch(console.error)
+    }, [id])
+
+    return { isLoading, isAlreadyMinted, isBeingMinted, mint }
 }
