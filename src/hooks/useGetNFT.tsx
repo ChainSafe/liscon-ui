@@ -20,12 +20,6 @@ export default (id: string) => {
     const isAlreadyMinted = useMemo(() => apiGETAnswer?.is_minted, [apiGETAnswer])
     const isBeingMinted = useMemo(() => apiGETAnswer?.is_being_minted, [apiGETAnswer])
 
-    console.log("apiGETAnswer?.is_minted", apiGETAnswer?.is_minted)
-    console.log("apiGETAnswer?.is_being_minted", apiGETAnswer?.is_being_minted)
-    console.log("isAlreadyMinted", isAlreadyMinted)
-    console.log("isBeingMinted", isBeingMinted)
-    console.log("imageUrl", imageUrl)
-    debugger
     // Trigger the fetchData after the initial render by using the useEffect hook
     useEffect(() => {
         setIsLoading(true)
@@ -34,8 +28,8 @@ export default (id: string) => {
                 const fetchedData = data as ApiAnswer
                 setApiGETAnswer({
                     ...fetchedData,
-                    is_being_minted: Boolean(`${fetchedData.is_being_minted}`.toLowerCase()),
-                    is_minted: Boolean(`${fetchedData.is_minted}`.toLowerCase()),
+                    is_being_minted: (data as any).is_being_minted as string === "TRUE",
+                    is_minted: (data as any).is_minted === "TRUE",
                 })
             })
             .catch(console.error)
