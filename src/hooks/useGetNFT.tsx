@@ -22,7 +22,7 @@ export default (id: string) => {
     // Trigger the fetchData after the initial render by using the useEffect hook
     useEffect(() => {
         setIsLoading(true)
-        axios.get(`${API_URL}${id}`)
+        axios.get(`${API_URL}/${id}`)
             .then(({ data }) => {
                 setApiGETAnswer(data)
             })
