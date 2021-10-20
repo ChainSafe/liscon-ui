@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useHistory, useParams } from "react-router-dom"
 import styled from "styled-components"
 import useGetNFT from "../hooks/useGetNFT"
 import Button from "../ui-components/Button"
@@ -16,6 +16,7 @@ const ethAddressRegex = new RegExp(/^0x[a-fA-F0-9]{40}$/)
 
 const Mint = ({ className }: Props) => {
     const { id = "" } = useParams<{ id: string }>()
+    const { push } = useHistory()
     const { isAlreadyMinted, isBeingMinted, isLoading, mint } = useGetNFT(id)
     const [address, setAddress] = useState("")
     const [isInvalidAddress, setIsInvalidAddress] = useState(false)
@@ -28,9 +29,9 @@ const Mint = ({ className }: Props) => {
         }
 
         mint(address)
-            .then((nftAddress) => nftAddress && window.open(nftAddress))
+            .then((nftAddress) => nftAddress && push(`view/${nftAddress}`))
             .catch(console.error)
-    }, [address, mint])
+    }, [address, mint, push])
 
     const onVisitOpenSea = useCallback(() => {
         if (address) {

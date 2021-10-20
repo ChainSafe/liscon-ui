@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import Header from "./components/Header"
 import Home from "./pages/Home"
 import Mint from "./pages/Mint"
+import View from "./pages/View"
 
 const App = () => {
   return (
@@ -23,6 +24,9 @@ const App = () => {
             </Route>
             <Route path="/mint/:id">
               <Mint />
+            </Route>
+            <Route path="/view/:nft">
+              <View />
             </Route>
           </Switch>
         </div>
