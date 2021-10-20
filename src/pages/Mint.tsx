@@ -18,6 +18,7 @@ const Mint = ({ className }: Props) => {
     const { id = "" } = useParams<{ id: string }>()
     const { push } = useHistory()
     const { isAlreadyMinted, isBeingMinted, isLoading, mint } = useGetNFT(id)
+    debugger
     const [address, setAddress] = useState("")
     const [isInvalidAddress, setIsInvalidAddress] = useState(false)
     const canMint = useMemo(() => !isLoading && !isAlreadyMinted && !isBeingMinted, [isAlreadyMinted, isBeingMinted, isLoading])
@@ -46,6 +47,11 @@ const Mint = ({ className }: Props) => {
             setIsInvalidAddress(true)
         }
     }, [])
+
+    console.log("MINT PAGE")
+    console.log("isLoading", isLoading)
+    console.log("isAlreadyMinted", isAlreadyMinted)
+    console.log("isBeingMinted", isBeingMinted)
 
     return (
         <div className={className}>

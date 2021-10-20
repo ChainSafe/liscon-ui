@@ -10,28 +10,33 @@ interface ApiAnswer {
     ipfs_link: string
     is_minted: boolean
     owner_address: string
-    is_being_minted: string
+    is_being_minted: boolean
 }
 
 export default (id: string) => {
     const [apiGETAnswer, setApiGETAnswer] = useState<ApiAnswer | undefined>()
     const [isLoading, setIsLoading] = useState(false)
     const [imageUrl, setImageUrl] = useState<string | undefined>(undefined)
-    const isAlreadyMinted = useMemo(() => !!apiGETAnswer?.is_minted, [apiGETAnswer])
-    const isBeingMinted = useMemo(() => !!apiGETAnswer?.is_being_minted, [apiGETAnswer])
+    const isAlreadyMinted = useMemo(() => apiGETAnswer?.is_minted, [apiGETAnswer])
+    const isBeingMinted = useMemo(() => apiGETAnswer?.is_being_minted, [apiGETAnswer])
 
+    console.log("apiGETAnswer?.is_minted", apiGETAnswer?.is_minted)
+    console.log("apiGETAnswer?.is_being_minted", apiGETAnswer?.is_being_minted)
     console.log("isAlreadyMinted", isAlreadyMinted)
     console.log("isBeingMinted", isBeingMinted)
-    console.log("apiGETAnswer", apiGETAnswer)
     console.log("imageUrl", imageUrl)
-
+    debugger
     // Trigger the fetchData after the initial render by using the useEffect hook
     useEffect(() => {
         setIsLoading(true)
         axios.get(`${API_URL}/${id}`)
             .then(({ data }) => {
-                console.log(data)
-                setApiGETAnswer(data)
+                const fetchedData = data as ApiAnswer
+                setApiGETAnswer({
+                    ...fetchedData,
+                    is_being_minted: Boolean(`${fetchedData.is_being_minted}`.toLowerCase()),
+                    is_minted: Boolean(`${fetchedData.is_minted}`.toLowerCase()),
+                })
             })
             .catch(console.error)
             .finally(() => {
@@ -80,7 +85,6 @@ export default (id: string) => {
     }, [apiGETAnswer])
 
     useEffect(() => {
-        console.log(apiGETAnswer)
         if (apiGETAnswer && !imageUrl) {
             getImageUrl()
         }
