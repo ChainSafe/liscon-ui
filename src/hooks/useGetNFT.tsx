@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useState, useEffect, useMemo, useCallback } from "react"
 
-const API_URL = "https://screams-yn559.ondigitalocean.app/ZZ2bp"
+const API_URL = "https://screams-yn559.ondigitalocean.app/"
 
 interface ApiAnswer {
     id: string
@@ -22,7 +22,7 @@ export default (id: string) => {
     // Trigger the fetchData after the initial render by using the useEffect hook
     useEffect(() => {
         setIsLoading(true)
-        axios.get(`${API_URL}?qr_id=${id}`)
+        axios.get(`${API_URL}${id}`)
             .then(({ data }) => {
                 setApiGETAnswer(data)
             })
